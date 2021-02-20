@@ -1,0 +1,64 @@
+version: 2.1
+
+orbs:
+  aws-ecr: circleci/aws-ecr@6.5.0
+  aws-ecs: circleci/aws-ecs@1.2.0
+
+jobs:
+  test:
+    docker:
+      - image: circleci/php:7.4.5-node-browsers
+    working_directory: ~/intro-app
+    steps:
+      - checkout
+      - run:
+          name: Update apt-get
+          command: sudo apt-get update
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "composer.json" }}
+            - v1-dependencies-
+      - run:
+          name: Install PHP libraries
+          command: composer install -n --prefer-dist
+      - save_cache:
+          paths:
+            - ./vendor
+          key: v1-dependencies-{{ checksum "composer.json" }}
+      - run:
+          command: sudo apt-get install -y wget git unzip libpq-dev libfreetype6-dev libjpeg62-turbo-dev libpng-dev
+      - run:
+          command: sudo docker-php-ext-configure gd --with-freetype --with-jpeg
+      - run:
+          command: sudo docker-php-ext-install -j$(nproc) gd
+      - run:
+          name: Make .env file
+          command: cp .env.testing .env.testing
+      - run:
+          name: Generate php artisan key
+          command: php artisan key:generate --env=testing
+      - run:
+          name: Run PHPUnit
+          command: vendor/bin/phpunit
+
+workflows:
+  test_and_deploy:
+    jobs:
+      - test
+      - aws-ecr/build-and-push-image:
+          requires:
+            - test
+          context: AWS_ECR_ECS
+          repo: intro-app_circleci_test
+          tag: '${CIRCLE_SHA1}'
+      - aws-ecs/deploy-service-update:
+          requires:
+            - aws-ecr/build-and-push-image
+          context: AWS_ECR_ECS
+          family: 'intro-app'
+          cluster-name: 'intro-app'
+          service-name: 'intro-app'
+          container-image-name-updates: 'container=intro-app,image-and-tag=AWS_ECR_ACCOUNT_URL/intro-app_circleci_test:${CIRCLE_SHA1}'
+          filters:
+            branches:
+              only: master
