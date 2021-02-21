@@ -12,7 +12,7 @@ RUN apt-get update \
   && chmod 755 /install-composer.sh \
   && /install-composer.sh \
 
-Run mkdir /workdir
+RUN mkdir /workdir
 
 COPY . /workdir
 
