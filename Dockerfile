@@ -1,5 +1,7 @@
 FROM php:7.4.1-fpm
 
+WORKDIR /var/www/html/intro-app
+
 COPY install-composer.sh /
 RUN apt-get update \
   && apt-get install -y wget git unzip libpq-dev libfreetype6-dev libjpeg62-turbo-dev libpng-dev \
@@ -12,7 +14,7 @@ RUN apt-get update \
   && chmod 755 /install-composer.sh \
   && /install-composer.sh \
 
-ADD . /var/www/html/intro-app/web
+ADD . .
 
 WORKDIR /var/www/html/intro-app/web
 
