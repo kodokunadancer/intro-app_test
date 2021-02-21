@@ -1,5 +1,8 @@
 FROM php:7.4.1-fpm
 
+RUN mkdir /workdir
+WORKDIR /workdir
+
 COPY install-composer.sh /
 RUN apt-get update \
   && apt-get install -y wget git unzip libpq-dev libfreetype6-dev libjpeg62-turbo-dev libpng-dev \
@@ -12,10 +15,9 @@ RUN apt-get update \
   && chmod 755 /install-composer.sh \
   && /install-composer.sh \
 
-RUN mkdir /workdir
+RUN mkdir /workdir/web
+COPY . /workdir/web
 
-COPY . /workdir
-
-WORKDIR /workdir
+WORKDIR /workdir/web
 
 CMD ["php","artisan", "serve", "--host", "0.0.0.0", "--port", "8085"]
