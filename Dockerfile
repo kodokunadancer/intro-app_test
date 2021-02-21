@@ -12,8 +12,10 @@ RUN apt-get update \
   && chmod 755 /install-composer.sh \
   && /install-composer.sh \
 
-ADD ./ /var/www/html/intro-app/web
+Run mkdir /workdir
 
-WORKDIR /var/www/html/intro-app/web
+COPY . /workdir
+
+WORKDIR /workdir
 
 CMD ["php","artisan", "serve", "--host", "0.0.0.0", "--port", "8085"]
