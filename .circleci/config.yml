@@ -58,7 +58,7 @@ workflows:
           family: 'intro-app'
           cluster-name: 'intro-app'
           service-name: 'intro-app'
-          container-image-name-updates: 'container=intro-app,image-and-tag=AWS_ECR_ACCOUNT_URL/intro-app_circleci_test:${CIRCLE_SHA1}'
+          container-image-name-updates: 'container=intro-app,image-and-tag=${AWS_ECR_ACCOUNT_URL}/intro-app_circleci_test:${CIRCLE_SHA1}'
           filters:
             branches:
               only: master
