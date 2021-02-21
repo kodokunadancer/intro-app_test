@@ -10,7 +10,7 @@ RUN apt-get update \
   && docker-php-ext-install -j$(nproc) pdo_pgsql \
   && : 'Install Composer' \
   && chmod 755 /install-composer.sh \
-  && /install-composer.sh \
+  && /install-composer.sh
 
 RUN mkdir /workdir
 COPY . /workdir
