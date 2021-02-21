@@ -12,7 +12,7 @@ RUN apt-get update \
   && chmod 755 /install-composer.sh \
   && /install-composer.sh \
 
-ADD . /var/www/html/intro-app
+ADD . /var/www/html/intro-app/web
 
 WORKDIR /var/www/html/intro-app/web
 
