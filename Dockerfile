@@ -11,6 +11,7 @@ RUN apt-get update \
   && docker-php-ext-install -j$(nproc) pdo_pgsql
 
 COPY --from=composer /usr/bin/composer /usr/bin/composer
+RUN composer install
 COPY . /var/www/html/workdir
 WORKDIR /var/www/html/workdir
 
