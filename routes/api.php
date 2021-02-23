@@ -19,3 +19,4 @@ Route::post('/login', 'Auth\LoginController@login')->name('login');
 Route::post('/logout', 'Auth\LoginController@logout')->name('logout');
 
 Route::get('/user', 'CommonController@getUser')->name('get.user');
+Route::get('/profile', 'CommonController@getProfile')->name('get.profile');
