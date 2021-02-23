@@ -28,4 +28,6 @@ Route::group(['middleware' => 'auth'],function() {
   Route::post('/profile/create', 'ProfileController@create')->name('create.profile');
   //グループ一覧
   Route::get('/mypage/{user}/groups','GroupController@index')->name('index.group');
+  //グループを作成する
+  Route::post('/mypage/{user}/groups/create', 'GroupController@create')->name('create.group');
 });
