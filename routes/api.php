@@ -32,4 +32,6 @@ Route::group(['middleware' => 'auth'],function() {
   Route::post('/mypage/{user}/groups/create', 'GroupController@create')->name('create.group');
   //グループを検索する
   Route::post('/mypage/{user}/groups/reserch', 'GroupController@reserch')->name('reserch.group');
+  //グループ参加
+  Route::get('/mypage/{user}/groups/{group}/join','GroupController@join')->name('join.group');
 });

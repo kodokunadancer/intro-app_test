@@ -84,4 +84,23 @@ class GroupController extends Controller
         return $group;
     }
 
+    /**
+     * グループ参加.
+     * @param User  $user
+     * @param Group $group
+     * @return \Illuminate\Http\Response
+     */
+    public function join(User $user, Group $group)
+    {
+        //ユーザーとグループの紐付きを中間テーブルに保存する
+        //すでに同じグループに参加している場合は、ロールバックする
+        try {
+            $user->groupUser()->attach($group);
+            return response($group, 201);
+        } catch (\Exception $exception) {
+            DB::rollback();
+            throw $exception;
+        }
+    }
+
 }
