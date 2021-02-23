@@ -42,20 +42,20 @@ class LoginApiTest extends TestCase
      * 異常系テスト
      */
     // public function should_不一致の場合エラーテキストを返す(): void
-    // {
-    //     $test_user = factory(User::class)->make();
-    //     $response = $this
-    //         ->json('POST', route('login'), [
-    //                  'email' => $test_user->email,
-    //                  'password' => $test_user->password,
-    //        ]);
-    //
-    //     $response
-    //         ->assertStatus(422)
-    //         ->assertJsonFragment([
-    //               'errors' => [
-    //                   'email' => ['ログイン情報が登録されていません。'],
-    //                 ],
-    //           ]);
-    // }
+    {
+        $test_user = factory(User::class)->make();
+        $response = $this
+            ->json('POST', route('login'), [
+                     'email' => $test_user->email,
+                     'password' => $test_user->password,
+           ]);
+
+        $response
+            ->assertStatus(422)
+            ->assertJsonFragment([
+                  'errors' => [
+                      'email' => ['ログイン情報が登録されていません。'],
+                    ],
+              ]);
+    }
 }
