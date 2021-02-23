@@ -31,7 +31,6 @@ class RegisterApiTest extends TestCase
         $this->assertEquals($data['name'], $user->name);
 
         $response
-            ->dump()
             ->assertStatus(201)
             ->assertJson(['name' => $user->name]);
     }
