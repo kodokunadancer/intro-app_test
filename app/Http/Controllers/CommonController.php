@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Profile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
@@ -27,6 +28,21 @@ class CommonController extends Controller
     public function getUser()
     {
         return Auth::user();
+    }
+
+    /**
+     * プロフィールの取得.
+     * @return Profile
+     */
+    public function getProfile()
+    {
+        $user = Auth::user();
+
+        if ($user) {
+            return Profile::where('user_id', $user->id)->with('owner', 'photos')->first();
+        }
+
+        return false;
     }
 
 }
