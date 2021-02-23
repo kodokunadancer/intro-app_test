@@ -10,6 +10,7 @@ use App\Photo;
 use App\Profile;
 use App\User;
 use App\Http\Requests\CreateGroup;
+use App\Http\Requests\SerchGroup;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
@@ -54,6 +55,33 @@ class GroupController extends Controller
         $user->groups()->save($group);
         $user->groupUser()->attach($group);
         return response($group, 201);
+    }
+
+    /**
+     * グループ検索.
+     * @param User $user
+     * @param SerchGroup $request
+     * @return Group
+     */
+    public function reserch(User $user, SerchGroup $request)
+    {
+        $group = Group::where([
+        ['name', $request->group_name],
+        ['password', $request->password],
+      ])->with('photo')->first();
+
+        $groups = $user->groups()->get()->all();
+        $id_array = array_column($groups, 'id');
+
+        //検索したグループが存在しない場合
+        if (!$group) {
+            return response(['error' => 'NotGroup'], 400);
+        }
+        //すでに参加している場合
+        elseif (in_array($group->id, $id_array)) {
+            return response(['error' => 'Participated'], 400);
+        }
+        return $group;
     }
 
 }
