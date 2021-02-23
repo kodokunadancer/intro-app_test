@@ -20,3 +20,5 @@ Route::post('/logout', 'Auth\LoginController@logout')->name('logout');
 
 Route::get('/user', 'CommonController@getUser')->name('get.user');
 Route::get('/profile', 'CommonController@getProfile')->name('get.profile');
+
+Route::get('/groups/{group}', 'GroupController@getGroup')->name('get.group');
