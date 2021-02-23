@@ -25,4 +25,18 @@ class GroupController extends Controller
         return $editGroup;
     }
 
+    /**
+     * グループ一覧.
+     * @param User $user
+     * @return Group
+     */
+    public function index(User $user)
+    {
+        if ($user->groups) {
+            $my_groups = $user->groupUser()->with('photo')->get();
+            return $my_groups;
+        }
+        return false;
+    }
+
 }
