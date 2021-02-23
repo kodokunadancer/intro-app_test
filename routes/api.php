@@ -30,4 +30,6 @@ Route::group(['middleware' => 'auth'],function() {
   Route::get('/mypage/{user}/groups','GroupController@index')->name('index.group');
   //グループを作成する
   Route::post('/mypage/{user}/groups/create', 'GroupController@create')->name('create.group');
+  //グループを検索する
+  Route::post('/mypage/{user}/groups/reserch', 'GroupController@reserch')->name('reserch.group');
 });
