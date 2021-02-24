@@ -10,6 +10,7 @@ use App\Photo;
 use App\Profile;
 use App\User;
 use App\Http\Requests\CreateGroup;
+use App\Http\Requests\EditGroup;
 use App\Http\Requests\SerchGroup;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -101,6 +102,48 @@ class GroupController extends Controller
             DB::rollback();
             throw $exception;
         }
+    }
+
+    /**
+     * グループ編集.
+     * @param User      $user
+     * @param Group     $group
+     * @param EditGroup $request
+     * @return \Illuminate\Http\Response
+     */
+    public function edit(User $user, Group $group, EditGroup $request)
+    {
+        if ($request->photo) {
+            $extension = $request->photo->extension();
+
+            $group_photo = new Photo();
+
+            // インスタンス生成時に割り振られたランダムなID値と
+            // 本来の拡張子を組み合わせてファイル名とする
+            $group_photo->filename = $group_photo->random_id . '.' . $extension;
+
+            $group_photo->filename = Storage::cloud()->putFileAs('groups', $request->photo, $group_photo->filename, 'public');
+
+            // データベースエラー時にファイル削除を行うため
+            // トランザクションを利用する
+            DB::beginTransaction();
+
+            try {
+                $group->photo()->delete();
+                $group->photo()->save($group_photo);
+                DB::commit();
+            } catch (\Exception $exception) {
+                DB::rollBack();
+                // DBとの不整合を避けるためアップロードしたファイルを削除
+                Storage::cloud()->delete($group_photo->filename);
+                throw $exception;
+            }
+        }
+
+        $group->name = $request->name;
+        $group->save();
+
+        return response($group, 201);
     }
 
     /**
