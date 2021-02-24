@@ -45,12 +45,12 @@ class SerchGroupRequestTest extends TestCase
                 true,
              ],
             '必須エラー' => [
-                ['name', 'password'],
+                ['group_name', 'password'],
                 ['', ''],
                 false,
              ],
             '最大文字数エラー' => [
-                ['name', 'password'],
+                ['group_name', 'password'],
                 [str_repeat('a', 21), str_repeat('a', 5)],
                 false,
              ],

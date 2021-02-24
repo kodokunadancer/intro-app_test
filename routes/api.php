@@ -34,4 +34,10 @@ Route::group(['middleware' => 'auth'],function() {
   Route::post('/mypage/{user}/groups/reserch', 'GroupController@reserch')->name('reserch.group');
   //グループ参加
   Route::get('/mypage/{user}/groups/{group}/join','GroupController@join')->name('join.group');
+
+  Route::group(['middleware' => 'can:view,user'], function() {
+    //マイプロフィールの編集
+    Route::post('/mypage/{user}/myprofile/edit', 'ProfileController@editMyProfile')->name('edit.myProfile');
+  });
+  
 });
