@@ -42,6 +42,8 @@ Route::group(['middleware' => 'auth'],function() {
 
   //ユーザーとグループの紐づきの有無を確認
   Route::group(['middleware' => 'can:view,group'],function() {
+    //グループ詳細
+    Route::get('/mypage/{user}/groups/{group}','GroupController@show')->name('show.group');
     //グループ退会
     Route::get('/mypage/{user}/groups/{group}/exit','GroupController@exit')->name('exit.group');
     //グループ編集
