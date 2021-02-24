@@ -29,4 +29,13 @@ class Profile extends Model
     {
         return $this->hasMany('App\Photo');
     }
+
+    /**
+     * リレーションシップ - commentsテーブル
+     * @return \Illuminate\Database\Eloquent\Relations\hasMany
+     */
+    public function comments()
+    {
+        return $this->hasMany('App\Comment', 'passive_profile_id', 'id', 'comments');
+    }
 }
