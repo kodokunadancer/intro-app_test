@@ -46,6 +46,10 @@ Route::group(['middleware' => 'auth'],function() {
     Route::get('/mypage/{user}/groups/{group}/exit','GroupController@exit')->name('exit.group');
     //グループ編集
     Route::post('/mypage/{user}/groups/{group}/edit','GroupController@edit')->name('edit.group');
+    //コメント投稿処理
+    Route::post('/mypage/{user}/groups/{group}/profiles/{profile}/comments', 'ProfileController@addComment')->name('add.comment');
   });
 
 });
+
+Route::get('/refresh-token', 'CommonController@refreshToken')->name('refresh.token');

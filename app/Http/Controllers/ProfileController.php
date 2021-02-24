@@ -7,9 +7,11 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Requests\CreateProfile;
 use App\Http\Requests\EditProfile;
+use App\Http\Requests\StoreComment;
 use App\User;
 use App\Profile;
 use App\Photo;
+use App\Comment;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -78,5 +80,32 @@ class ProfileController extends Controller
         }
 
         return response($profile, 201);
+    }
+
+    /**
+     * コメント保存.
+     * @param User         $user
+     * @param Group        $group
+     * @param Profile      $profile
+     * @param StoreComment $request
+     * @return \Illuminate\Http\Response
+     */
+    public function addComment(User $user, Group $group, Profile $profile, StoreComment $request)
+    {
+        //コメントしたプロフィールを取得
+        $active_profile = $user->profiles()->first();
+        // コメントを受けた側のプロフィールをわかりやすいように変換
+        $passive_profile = $profile;
+
+        $comment = new Comment();
+        $comment->content = $request->get('content');
+        //まずはコメントした側のプロフィール情報を保存
+        $comment->active_profile_id = $active_profile->id;
+        //親から子へのリレーションの保存の仕方でなければならない
+        //次はコメントを受けた側のプロフィールをさらに紐付けてそのコメントを保存
+        $passive_profile->comments()->save($comment);
+
+        $new_comments = Comment::where('passive_profile_id', $passive_profile->id)->with(['author', 'likes'])->get();
+        return response($new_comments, 201);
     }
 }
