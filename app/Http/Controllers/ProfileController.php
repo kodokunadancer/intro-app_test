@@ -108,4 +108,52 @@ class ProfileController extends Controller
         $new_comments = Comment::where('passive_profile_id', $passive_profile->id)->with(['author', 'likes'])->get();
         return response($new_comments, 201);
     }
+
+    /**
+     * いいね付与.
+     * @param User    $user
+     * @param Group   $group
+     * @param Profile $profile
+     * @param Comment $comment
+     * @return array
+     */
+    public function like(User $user, Group $group, Profile $profile, Comment $comment)
+    {
+        //まずいいねを押したプロフィールのオブジェクトを取得
+        $profile = $user->profiles()->first();
+        $comment = Comment::where('id', $comment->id)->with('likes')->first();
+
+        if (!$comment) {
+            abort(404);
+        }
+
+        //いいねは１回しか押させない
+        $comment->likes()->detach($profile->id);
+        $comment->likes()->attach($profile->id);
+
+        return ['comment_id' => $comment->id];
+    }
+
+    /**
+     * いいね削除.
+     * @param User    $user
+     * @param Group   $group
+     * @param Profile $profile
+     * @param Comment $comment
+     * @return array
+     */
+    public function unlike(User $user, Group $group, Profile $profile, Comment $comment)
+    {
+        //まずいいねを押したプロフィールのオブジェクトを取得
+        $profile = $user->profiles()->first();
+        $comment = Comment::where('id', $comment->id)->with('likes')->first();
+
+        if (!$comment) {
+            abort(404);
+        }
+
+        $comment->likes()->detach($profile->id);
+
+        return ['comment_id' => $comment->id];
+    }
 }

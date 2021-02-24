@@ -35,7 +35,7 @@ Route::group(['middleware' => 'auth'],function() {
   //グループ参加
   Route::get('/mypage/{user}/groups/{group}/join','GroupController@join')->name('join.group');
 
-  Route::group(['middleware' => 'can:view,user'], function() {
+  Route::group(['middleware' => 'can:view,user'],function() {
     //マイプロフィールの編集
     Route::post('/mypage/{user}/myprofile/edit', 'ProfileController@editMyProfile')->name('edit.myProfile');
   });
@@ -48,6 +48,10 @@ Route::group(['middleware' => 'auth'],function() {
     Route::post('/mypage/{user}/groups/{group}/edit','GroupController@edit')->name('edit.group');
     //コメント投稿処理
     Route::post('/mypage/{user}/groups/{group}/profiles/{profile}/comments', 'ProfileController@addComment')->name('add.comment');
+    //いいね付与
+    Route::put('/mypage/{user}/groups/{group}/profiles/{profile}/comments/{comment}', 'ProfileController@like')->name('like.comment');
+    //いいね削除
+    Route::delete('/mypage/{user}/groups/{group}/profiles/{profile}/comments/{comment}', 'ProfileController@unlike');
   });
 
 });

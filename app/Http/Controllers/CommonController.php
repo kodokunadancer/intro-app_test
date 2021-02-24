@@ -45,4 +45,15 @@ class CommonController extends Controller
         return false;
     }
 
+    /**
+     * セッションリフレッシュ.
+     * @param Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function refreshToken(Request $request)
+    {
+        $request->session()->regenerateToken();
+        return response()->json();
+    }
+
 }
