@@ -35,7 +35,7 @@ class GroupController extends Controller
      */
     public function index(User $user)
     {
-        if ($user->groups) {
+        if ($user->groupUser) {
             $my_groups = $user->groupUser()->with('photo')->get();
             return $my_groups;
         }
@@ -71,7 +71,7 @@ class GroupController extends Controller
         ['password', $request->password],
       ])->with('photo')->first();
 
-        $groups = $user->groups()->get()->all();
+        $groups = $user->groupUser()->get()->all();
         $id_array = array_column($groups, 'id');
 
         //検索したグループが存在しない場合
@@ -144,6 +144,34 @@ class GroupController extends Controller
         $group->save();
 
         return response($group, 201);
+    }
+
+    /**
+     * グループ詳細.
+     * @param User  $user
+     * @param Group $group
+     * @return array
+     */
+    public function show(User $user, Group $group)
+    {
+        // 該当のグループと紐付いている複数のユーザーを配列に格納
+        foreach ($group->users as $users) {
+            $group_users[] = $users;
+        }
+        // 取り出した複数ユーザーのプロフィールをひとつずつ取り出す
+        foreach ($group_users as $group_user) {
+            $profiles[] = Profile::where('user_id', $group_user->id)->with('photos')->first();
+        }
+        // プロフィールのnameキーと値のセットを別の配列へ一旦まとめて格納。idについてもまとめておく。
+        foreach ($profiles as $value) {
+            $name_array[] = $value['name'];
+            $id_array[] = $value['id'];
+        }
+        // profiles多次元配列をnameの五十音順を軸に並び替える
+        array_multisort($name_array, SORT_ASC, SORT_STRING, $id_array, SORT_ASC, SORT_NUMERIC, $profiles);
+        //自分のプロフィールを取得
+        $my_profile = Profile::where('user_id', $user->id)->with('photos')->first();
+        return [$group, $my_profile, $profiles];
     }
 
     /**
