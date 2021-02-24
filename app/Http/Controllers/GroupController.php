@@ -103,4 +103,16 @@ class GroupController extends Controller
         }
     }
 
+    /**
+     * グループ退会.
+     * @param User  $user
+     * @param Group $group
+     * @return \Illuminate\Http\Response
+     */
+    public function exit(User $user, Group $group)
+    {
+        $group->users()->detach($user);
+        return false;
+    }
+
 }

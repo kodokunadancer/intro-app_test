@@ -39,5 +39,11 @@ Route::group(['middleware' => 'auth'],function() {
     //マイプロフィールの編集
     Route::post('/mypage/{user}/myprofile/edit', 'ProfileController@editMyProfile')->name('edit.myProfile');
   });
-  
+
+  //ユーザーとグループの紐づきの有無を確認
+  Route::group(['middleware' => 'can:view,group'],function() {
+    //グループ退会
+    Route::get('/mypage/{user}/groups/{group}/exit','GroupController@exit')->name('exit.group');
+  });
+
 });
