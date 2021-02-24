@@ -44,6 +44,8 @@ Route::group(['middleware' => 'auth'],function() {
   Route::group(['middleware' => 'can:view,group'],function() {
     //グループ退会
     Route::get('/mypage/{user}/groups/{group}/exit','GroupController@exit')->name('exit.group');
+    //グループ編集
+    Route::post('/mypage/{user}/groups/{group}/edit','GroupController@edit')->name('edit.group');
   });
 
 });
